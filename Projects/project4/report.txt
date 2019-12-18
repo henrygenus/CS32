@@ -1,0 +1,70 @@
+1.  No known bugs exist.
+
+2. All functions, to my knowledge, satisfy the big-O requirements of the spec.
+
+3.
+Trie::find():
+{
+create a vector for values
+call doFind
+return the vector
+}
+
+doFind()
+{
+if the key is empty
+	push all the values onto the vector created above
+otherwise
+	for each of the children
+	{
+	if the base is the same as the first base in the sequence
+		doFind(the child, sequence - sequence[0])
+	else if ! exactMatchOnly
+		doFind(the child, sequence - sequence[0])
+	}
+}
+
+
+GenomeMatcher::findGenomesWithThisDNA():
+
+{
+if the fragment or the minimumLength is shorter than the minimumSearchLength
+	return false
+
+create a vector(temp) and store the return value of m_sequences->find 
+create a list for DNAMatch pointers
+
+for each match found
+{
+	create a new DNAMatch with the corresponding name and position
+	determineLength() to determine the DNAMatch length
+	
+	if the match is shorter than the minimum length
+		delete the newly crafted element
+	otherwise
+		for each element already in the list
+			if the new DNAMatch shares a name with an old one
+			{
+				if the new length is longer
+					{
+						delete old w/ = name
+						push the new one on the list
+					}
+				otherwise (ll old length are longer)
+					delete the new item
+			}
+}
+	
+if the list is empty (there were no matches_
+	return false
+
+sort the list by length with name as tiebreaker
+
+for all items in the list 
+{
+	push onto the vector "matches"
+	delete from list
+}
+	
+return true
+}

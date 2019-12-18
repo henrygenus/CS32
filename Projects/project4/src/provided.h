@@ -6,6 +6,7 @@
 #include <istream>
 
 class GenomeImpl;
+class GenomeMatcherImpl;
 
 class Genome
 {
@@ -35,8 +36,6 @@ struct GenomeMatch
     std::string genomeName;
     double percentMatch;
 };
-
-class GenomeMatcherImpl;
 
 class GenomeMatcher
 {

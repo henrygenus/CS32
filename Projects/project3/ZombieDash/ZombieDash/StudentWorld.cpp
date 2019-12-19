@@ -28,7 +28,7 @@ int StudentWorld::init()
   
     ostringstream oss;
     oss.fill('0');
-    oss << "level" << setw(2) << getLevel()+2 << ".txt";
+    oss << "level" << setw(2) << getLevel() << ".txt";
     string levelFile = oss.str();
     
     
@@ -174,7 +174,7 @@ void StudentWorld::iterate(Object* caller)
             continue;
         else if ((*it)->isAlive() && !(*it)->blocks() &&
                  caller->overlap((*it)->getX(), (*it)->getY(),
-                                    caller->getX(), caller->getY()))
+                                 caller->getX(), caller->getY()))
             caller->activate(*it);
     }
 }

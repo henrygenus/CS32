@@ -395,23 +395,24 @@ void Object::doSomething()
     if (!isAlive())
         return;
 
-    getWorld()->iterate(this);
-  
     int x = getWorld()->getPlayer()->getX();
     int y = getWorld()->getPlayer()->getY();
     if (overlap(x, y, getX(), getY()))
         activate(getWorld()->getPlayer());
+
+    getWorld()->iterate(this); 
 }
 
 void Exit::activate(Actor* actor)
  {
-    if (getWorld()->numCitizens() == 0)
+    if (getWorld()->numCitizens() > 0)
+        actor->exit();
+    else if (actor == getWorld()->getPlayer())
     {
         getWorld()->setStatus(GWSTATUS_FINISHED_LEVEL);
         getWorld()->playSound(SOUND_LEVEL_FINISHED);
     }
-    else
-        actor->exit();
+       
 }
 
 void Pit::activate(Actor* actor)

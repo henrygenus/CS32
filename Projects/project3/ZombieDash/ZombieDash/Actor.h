@@ -22,8 +22,6 @@ public:
     void playSound(int ID);
     virtual ~Actor() {};
     
-    virtual void doSomething() = 0;
-    
     //setters
     void setWorld(StudentWorld& world) { m_world = &world; }
     void setDead() { m_living = false; }
@@ -39,6 +37,7 @@ public:
 
     
     //general virtuals
+    virtual void doSomething() = 0;
     virtual void infect() {};
     virtual void burn() {};
     virtual void exit() {};

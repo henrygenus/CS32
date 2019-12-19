@@ -123,6 +123,7 @@ template<typename ValueType>
 node<ValueType>* Trie<ValueType>::addNode()
 {
     node<ValueType>* temp = new node<ValueType>;
+    temp->m_base = "";
     temp->m_nChildren = 0;
     return temp;
 }

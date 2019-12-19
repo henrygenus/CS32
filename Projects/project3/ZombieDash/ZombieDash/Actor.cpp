@@ -210,7 +210,6 @@ void Citizen::infect()
         Human::infect();
         playSound(SOUND_CITIZEN_INFECTED);
     }
-    
 }
 
 void Citizen::exit()
@@ -300,7 +299,6 @@ void Citizen::fatalInfection()
 // ////////   ZOMBIES  //////////
 // //////////////////////////////
 
-
 void Zombie::setDead()
 {
     Actor::setDead();
@@ -334,9 +332,7 @@ void Zombie::doSomething()
     int dest_x = getX() + ZOMBIE_MOVE_LENGTH * cos(getDirection() * PI/180);
     int dest_y = getY() + ZOMBIE_MOVE_LENGTH * sin(getDirection() * PI/180);
     if (tryToMove(dest_x, dest_y))
-    {
         m_movementPlanDistance--;
-    }
     else
         setMovementPlanDistance(0);
 }
@@ -412,7 +408,6 @@ void Exit::activate(Actor* actor)
         getWorld()->setStatus(GWSTATUS_FINISHED_LEVEL);
         getWorld()->playSound(SOUND_LEVEL_FINISHED);
     }
-       
 }
 
 void Pit::activate(Actor* actor)

@@ -38,7 +38,7 @@ int StudentWorld::init()
         cerr << "Cannot find " << levelFile << " data file" << endl;
         return GWSTATUS_PLAYER_WON;
     }
-    else if (result == Level::load_fail_bad_format)
+    if (result == Level::load_fail_bad_format)
     {
         cerr << "Your level was improperly formatted" << endl;
         return GWSTATUS_LEVEL_ERROR;
@@ -58,7 +58,7 @@ int StudentWorld::init()
             }
         }
     }
-    return getLevel() == 99 ? GWSTATUS_PLAYER_WON : GWSTATUS_CONTINUE_GAME;
+    return getLevel() == LEVEL_WIN ? GWSTATUS_PLAYER_WON : GWSTATUS_CONTINUE_GAME;
 }
 
 void StudentWorld::setGrid(Level::MazeEntry ge, int x, int y)

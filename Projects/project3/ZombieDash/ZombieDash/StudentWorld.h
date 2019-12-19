@@ -10,6 +10,7 @@
 
 #define SPRITE_SIZE 16
 #define OBJECT_RADIUS 10
+#define LEVEL_WIN 100
 
 class Penelope;
 class Actor;

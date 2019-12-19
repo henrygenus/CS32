@@ -53,14 +53,13 @@ template<typename ValueType>
 Trie<ValueType>::~Trie()
 {
     doClear(root);
+    delete root;
 }
 
 template<typename ValueType>
 void Trie<ValueType>::reset()
 {
     doClear(root);
-    delete root;
-    root = addNode();
 }
 
 template<typename ValueType>
@@ -86,6 +85,8 @@ void Trie<ValueType>::doClear(node<ValueType>* N)
         doClear(N->m_children[i]);
     for (int i = 0; i < N->m_nChildren; i++)
         delete (N->m_children[i]);
+    N->m_nChildren = 0;
+    N->m_base = "";
 }
 
 template<typename ValueType>
@@ -102,7 +103,7 @@ void Trie<ValueType>::addValue(node<ValueType>* next, std::string key, ValueType
         for (int i = 0; i < next->m_nChildren; i++)
             if (next->m_base[i] == key[0])
             {
-                addValue(next->m_children[i], key.substr(1, key.size() - 1), value);
+                addValue(next->m_children[i], key.substr(1, key.size()-1), value);
                 return;
             }
     }

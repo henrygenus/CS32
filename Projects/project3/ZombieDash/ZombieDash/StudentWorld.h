@@ -8,6 +8,8 @@
 #include <list>
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
+#define SPRITE_SIZE 16
+
 class Penelope;
 class Actor;
 class Object;
@@ -28,8 +30,9 @@ public:
     //getters
     Penelope* getPlayer() { return m_player; }
     int numCitizens() { return m_citizens; }
-    Actor* getClosestCitizenTo(int x, int y);
-    Actor* getClosestZombieTo(int x, int y);
+    Actor* getClosestCitizenTo(int x, int y) {return getClosestPersonTo(x, y, false);}
+    Actor* getClosestZombieTo(int x, int y) {return getClosestPersonTo(x, y, true);}
+    Actor* getClosestPersonTo(int x, int y, int threat);
     bool isFlameBlockedAt(int x, int y);
     bool isZombieVomitTriggeredAt(int x, int y);
     

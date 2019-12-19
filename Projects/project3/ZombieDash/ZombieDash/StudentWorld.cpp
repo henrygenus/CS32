@@ -199,8 +199,7 @@ bool StudentWorld::isFlameBlockedAt(int x, int y)
     {
         if (! (*it)->isAlive())
             continue;
-        if (overlap(x, y, (*it)->getX(), (*it)->getY())
-            && (*it)->blocksFlame())
+        if (overlap(x, y, (*it)->getX(), (*it)->getY()) && (*it)->blocks())
             return true;
     }
     return false;
@@ -225,52 +224,24 @@ bool StudentWorld::isZombieVomitTriggeredAt(int x, int y)
     return false;
 }
 
-//as according to an object
 bool StudentWorld::overlap(int x1, int y1, int x2, int y2)
 {
     int dx = sqrt(pow(x1 - x2, 2));
     int dy = sqrt(pow(y1 - y2, 2));
-    if (dx < 16 && dy < 16)
-        return true;
-    else
-        return false;
+    return (dx < SPRITE_SIZE && dy < SPRITE_SIZE);
 }
 
-
-
-//gets closest person of a different type (not Penelope)
-Actor* StudentWorld::getClosestCitizenTo(int x, int y)
+Actor* StudentWorld::getClosestPersonTo(int x, int y, int threat)
 {
-    Actor* ptr = nullptr;
-    for (std::list<Actor*>::iterator it = m_board.begin();
-         it != m_board.end(); it++)
+    Actor* ptr = (threat ? nullptr : m_player);
+    for (auto it = m_board.begin(); it != m_board.end(); it++)
     {
-        if ((*it)->canOverlap())
-            continue;
-        if ((ptr == nullptr
-            || (distance((*it)->getX(), (*it)->getY(), x, y)
-                < distance(ptr->getX(), ptr->getY(), x, y)))
-            && ! (*it)->isThreat()
-            && ! (*it)->blocksFlame())
-        ptr = (*it);
-    }
-    return ptr;
-}
-
-Actor* StudentWorld::getClosestZombieTo(int x, int y)
-{
-    Actor* ptr = nullptr;
-    for (std::list<Actor*>::iterator it = m_board.begin();
-         it != m_board.end(); it++)
-    {
-        if ((*it)->canOverlap())
-            continue;
-        if ((ptr == nullptr
-             || (distance((*it)->getX(), (*it)->getY(), x, y)
-                 < distance(ptr->getX(), ptr->getY(), x, y)))
-            && (*it)->isThreat()
-            && ! (*it)->blocksFlame())
-            ptr = (*it);
+       if ((*it)->canOverlap())
+           continue;
+       else if (ptr == nullptr || (!(*it)->blocks() && (*it)->isThreat() == threat
+            && distance((*it)->getX(), (*it)->getY(), x, y)
+                              < distance(ptr->getX(), ptr->getY(), x, y)))
+           ptr = (*it);
     }
     return ptr;
 }

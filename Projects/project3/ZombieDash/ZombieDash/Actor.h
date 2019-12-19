@@ -32,7 +32,7 @@ public:
     //getters
     StudentWorld* getWorld() const { return m_world; }
     bool isAlive() { return m_living; }
-    virtual bool blocksFlame() const = 0;
+    virtual bool blocks() const = 0;
     virtual bool canOverlap() const = 0;
     virtual bool isThreat() const { return false; }
     virtual int infectionCount() const { return -1; }
@@ -62,7 +62,7 @@ public:
     virtual void doSomething() {};
    
     //getters
-    virtual bool blocksFlame() const { return true; }
+    virtual bool blocks() const { return true; }
     virtual bool canOverlap() const { return false; }
 };
 
@@ -84,12 +84,11 @@ public:
     
     //getters
     virtual bool canMove() const { return m_move; }
-    virtual bool blocksFlame() const { return false; }
+    virtual bool blocks() const { return false; }
     virtual bool canOverlap() const { return false; }
 
     //general virtuals
-    void FindDirectionsToward
-        (Actor* closestPerson, int &dx, int &dy);
+    void FindDirectionsToward(Actor* closestPerson, int &dx, int &dy);
     virtual bool tryToMove(int dest_x, int dest_y);
    
 private:
@@ -258,7 +257,7 @@ public:
     //getters
     virtual bool canOverlap() const { return true; }
     virtual bool isActive() const { return m_isActive; }
-    virtual bool blocksFlame() const { return false; }
+    virtual bool blocks() const { return false; }
     bool overlap(int x1, int y1, int x2, int y2) const;
     
 private:

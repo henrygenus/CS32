@@ -53,10 +53,8 @@ GenomeMatcherImpl::~GenomeMatcherImpl()
     delete m_sequences;
     if (m_matches.empty())
         return;
-    for (int i = 0; i < m_matches.size() - 1; i++)
-    {
+    for (int i = 0; i < m_matches.size(); i++)
         delete m_matches[i];
-    }
     for (int i = 0; i < m_genomes.size(); i++)
         delete m_genomes[i];
 }
@@ -68,7 +66,7 @@ void GenomeMatcherImpl::addGenome(const Genome& genome)
     int i = 0; string fragment; Match* p;
     
     while (genome.extract(i, minimumSearchLength(), fragment)
-           && fragment.length() == minimumSearchLength())
+           && fragment.length() >= minimumSearchLength())
     {
         p = new Match;
         p->genomePos = (int) m_genomes.size() - 1;
@@ -116,7 +114,7 @@ bool GenomeMatcherImpl::findGenomesWithThisDNA(const string& fragment, int minim
         return false;
     
     l.sort(compareDNA);
-
+    matches.clear();
     for (auto it = l.begin(); it != l.end(); it++)
     {
         matches.push_back(**it);
@@ -128,7 +126,7 @@ bool GenomeMatcherImpl::findGenomesWithThisDNA(const string& fragment, int minim
 
 void GenomeMatcherImpl::determineLength(Match &d, DNAMatch* p, const string& fragment, bool exactMatchOnly) const
 {
-    bool SNiPCatch = (! exactMatchOnly);
+    bool SNiPCatch = (!exactMatchOnly);
     p->length = 0;
     std::string sequence = "";
     m_genomes[d.genomePos]->extract(p->position, (int)fragment.length(), sequence);

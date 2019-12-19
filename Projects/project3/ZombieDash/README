@@ -19,3 +19,7 @@ Actor.cpp:		implementation of game object classes
 Actor.h:		declaration of game object classes
 StudentWorld.cpp:	implementation of game world
 StudentWorld.h:		declaration of game world
+
+Note that inside "main.cpp", the path to assets is hard coded and must
+be altered to run correctly.  XQuartz or another similar program is
+required.

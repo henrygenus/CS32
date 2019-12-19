@@ -45,7 +45,7 @@ for (data) elements in s2
 unite (data) with result //unite simply returns if (data) already present
 
 
-Test Cases: //as code: commented out sections allow printing in case of failed tests
+Test Cases: //as code: commented out sections allow printing for failed tests
  // ItemType is std::string
     
     // empty tests

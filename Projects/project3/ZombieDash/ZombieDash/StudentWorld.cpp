@@ -168,8 +168,7 @@ bool StudentWorld::overlap(int x1, int y1, int x2, int y2)
 
 void StudentWorld::iterate(Object* caller)
 {
-    for (std::list<Actor*>::iterator it = m_board.begin();
-         it != m_board.end(); it++)
+    for (std::list<Actor*>::iterator it = m_board.begin(); it != m_board.end(); it++)
     {
         if (*it == caller)
             continue;
@@ -181,18 +180,17 @@ void StudentWorld::iterate(Object* caller)
 }
 
 //will return isBlockedByWall as true if the object blocking is a wall
-bool StudentWorld::isOpenSpace(int x, int y, Actor* actor)
+bool StudentWorld::isOpenSpace(int x, int y, Actor* caller)
 {
-    for (std::list<Actor*>::iterator it = m_board.begin();
-         it != m_board.end(); it++)
+    for (std::list<Actor*>::iterator it = m_board.begin(); it != m_board.end(); it++)
     {
-        if (!(*it)->isAlive() || (*it) == actor)
+        if (!(*it)->isAlive() || (*it) == caller)
             continue;
         else if (overlap((*it)->getX(), (*it)->getY(), x, y))
-            if (actor != nullptr && ! (*it)->canOverlap())
+            if (caller != nullptr && ! (*it)->canOverlap())
                 return false;
     }
-    if (actor != nullptr && actor != m_player)
+    if (caller != nullptr && caller != m_player)
         if (overlap(m_player->getX(), m_player->getY(), x, y))
             return false;
     return true;
@@ -200,8 +198,7 @@ bool StudentWorld::isOpenSpace(int x, int y, Actor* actor)
 
 bool StudentWorld::isFlameBlockedAt(int x, int y)
 {
-    for (std::list<Actor*>::iterator it = m_board.begin();
-         it != m_board.end(); it++)
+    for (std::list<Actor*>::iterator it = m_board.begin(); it != m_board.end(); it++)
     {
         if (! (*it)->isAlive())
             continue;
@@ -216,8 +213,7 @@ bool StudentWorld::isZombieVomitTriggeredAt(int x, int y)
     if (distance(x, y, m_player->getX(), m_player->getY()) <= OBJECT_RADIUS
         && m_player->infectionCount() == 0)
         return true;
-    for (std::list<Actor*>::iterator it = m_board.begin();
-         it != m_board.end(); it++)
+    for (std::list<Actor*>::iterator it = m_board.begin(); it != m_board.end(); it++)
     {
         if (! (*it)->isAlive())
             continue;
@@ -233,7 +229,7 @@ bool StudentWorld::isZombieVomitTriggeredAt(int x, int y)
 Actor* StudentWorld::getClosestPersonTo(int x, int y, int threat)
 {
     Actor* ptr = (threat ? nullptr : m_player);
-    for (auto it = m_board.begin(); it != m_board.end(); it++)
+    for (std::list<Actor*>::iterator it = m_board.begin(); it != m_board.end(); it++)
     {
        if (! (*it)->isAlive() || (*it)->canOverlap())
            continue;

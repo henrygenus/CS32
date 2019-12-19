@@ -25,7 +25,7 @@ public:
     virtual void cleanUp();
     virtual ~StudentWorld() { cleanUp(); }
     
-    //if an object is activated, iterate over board and actiavate
+    // for a caller, iterate over board, check overlap, and activate
     void iterate(Object* caller);
     
     //getters
@@ -38,8 +38,8 @@ public:
     bool isZombieVomitTriggeredAt(int x, int y);
     
     //booleans
-    //get whether a space is empty (can be moved to) & if it is blocked by a wall
-    bool isOpenSpace(int x, int y, Actor* actor);
+    //get whether a space is empty (can be moved to)
+    bool isOpenSpace(int x, int y, Actor* caller);
     
     //setters
     void setStatus(int status) { m_status = status; }
@@ -49,7 +49,7 @@ public:
 private:
     //data members
     Penelope* m_player;
-    std::list<Actor*> m_board; //maybe vector
+    std::list<Actor*> m_board;
     int m_citizens;
     int m_status;
     

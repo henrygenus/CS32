@@ -1,0 +1,5 @@
+PACKAGE CONTENTS:
+
+Set.cpp:	my implementation of the ordered set class
+Set.h:		the declaration for above class
+main.cpp:	a routine for testing Set with ItemType string

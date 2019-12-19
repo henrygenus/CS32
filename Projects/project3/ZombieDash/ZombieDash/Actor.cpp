@@ -392,7 +392,7 @@ bool Object::overlap(int x1, int y1, int x2, int y2) const
 
 void Object::doSomething()
 {
-    if ( ! isAlive())
+    if (!isAlive())
         return;
 
     getWorld()->iterate(this);
@@ -421,23 +421,23 @@ void Pit::activate(Actor* actor)
 
 void Landmine::doSomething()
 {
-    if (m_safetyTicks == 0)
-        makeActive();
-    if ( ! isActive())
+    if (! isAlive())
+        return;
+    else if (! isActive())
     {
-        m_safetyTicks--;
+        if (--m_safetyTicks == 0)
+            makeActive();
         return;
     }
-    else
-        Object::doSomething();
+    Object::doSomething();
 }
 
 void Landmine::activate(Actor* actor)
 {
-    if ( ! isActive() || ! isAlive())
+    if (!isAlive())
         return;
-    playSound(SOUND_LANDMINE_EXPLODE);
     setDead();
+    playSound(SOUND_LANDMINE_EXPLODE);
     //set fire to spaces around it with orientation UP
     for (int i = -1; i <= 1; i++)
     {
@@ -449,6 +449,7 @@ void Landmine::activate(Actor* actor)
                                            getY() + (j-1) * SPRITE_HEIGHT, up));
         }
     }
+    getWorld()->addActor(new Pit(getX() * SPRITE_WIDTH, getY() * SPRITE_HEIGHT));
 }
 
 // //////////////////////////////
@@ -474,13 +475,13 @@ void Vomit::activate(Actor* actor)
     actor->infect();
 }
 
-////////////////////////////////
-//////////   GOODIES  //////////
-////////////////////////////////
+// //////////////////////////////
+// ////////   GOODIES  //////////
+// //////////////////////////////
 
 void Goodie::doSomething()
 {
-    if ( ! isAlive())
+    if (!isAlive())
         return;
     int x1 = getWorld()->getPlayer()->getX();
     int y1 = getWorld()->getPlayer()->getY();

@@ -173,8 +173,8 @@ void StudentWorld::iterate(Object* caller)
     {
         if (*it == caller)
             continue;
-        else if ((*it)->isAlive()
-                 && caller->overlap((*it)->getX(), (*it)->getY(),
+        else if ((*it)->isAlive() && !(*it)->blocks() &&
+                 caller->overlap((*it)->getX(), (*it)->getY(),
                                     caller->getX(), caller->getY()))
             caller->activate(*it);
     }
@@ -235,7 +235,7 @@ Actor* StudentWorld::getClosestPersonTo(int x, int y, int threat)
     Actor* ptr = (threat ? nullptr : m_player);
     for (auto it = m_board.begin(); it != m_board.end(); it++)
     {
-       if ((*it)->canOverlap() || ! (*it)->isAlive())
+       if (! (*it)->isAlive() || (*it)->canOverlap())
            continue;
        else if (ptr == nullptr || (!(*it)->blocks() && (*it)->isThreat() == threat
             && distance((*it)->getX(), (*it)->getY(), x, y)

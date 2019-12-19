@@ -60,6 +60,8 @@ template<typename ValueType>
 void Trie<ValueType>::reset()
 {
     doClear(root);
+    this->Trie::~Trie<ValueType>();
+    root = addNode();
 }
 
 template<typename ValueType>

@@ -37,14 +37,17 @@ bool GenomeImpl::load(istream& genomeSource, vector<Genome>& genomes)
         sequence = "";
         if (genomeSource.get() == '>')
         {
-            if ( ! getline(genomeSource, name) || ! genomeSource.peek())
+            if (!getline(genomeSource, name) || !genomeSource.peek())
                 return false;
             while (genomeSource.peek() != EOF && genomeSource.peek() != '>')
             {
                 line = "";
-                getline(genomeSource, line);
+                if (!getline(genomeSource, line))
+                    return false;
                 sequence += line;
             }
+            if (name == "" || sequence == "")
+                return false;
             Genome g = *new Genome(name, sequence);
             genomes.push_back(g);
             if (genomeSource.peek() == EOF)
@@ -68,7 +71,7 @@ string GenomeImpl::name() const
 
 bool GenomeImpl::extract(int position, int length, string& fragment) const
 {
-    if (position + length > m_length)
+    if (position < 0 || length > m_length || position + length > m_length)
         return false;
     string s;
     s.assign(m_sequence.substr(position, length));

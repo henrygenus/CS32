@@ -8,12 +8,6 @@
 #include <stdlib.h>
 using namespace std;
 
-struct Match
-{
-    int pos;
-    int genomePos;
-};
-
 class GenomeMatcherImpl
 {
 public:
@@ -26,18 +20,13 @@ public:
 private:
     int m_minSearchLength;
         //depth of trie/length of shortest thing that can be searched for
-    Trie<Match*>* m_sequences;
+    Trie<DNAMatch*>* m_sequences;
         //tree pointer which holds genome index and position in genomes
     vector<const Genome*> m_genomes;
         //vector of all genomes passed into the trie
-    vector<Match*> m_matches;
-        //vector of all matches: (struct: holds genome index and position)
-    void determineLength(Match &d, DNAMatch* p, const string& fragment, bool exactMatchOnly) const;
+    void determineLength(DNAMatch &d, const string& fragment, bool exactMatchOnly) const;
         //iterates through the fragment, comparing it to the relevant sequence
         //sets length equal to the number of characters that match
-    void add(list<DNAMatch*> &l, DNAMatch* p) const;
-        //adds DNAMatch to list if it is longer than the others w/ same name
-        //deletes all shorter matches from the same genome
     static int compareGenome(const void* a, const void* b);
         //compares length with name as tiebreaker: for qsort
     static bool compareDNA(const DNAMatch* G1, const DNAMatch* G2);
@@ -45,16 +34,12 @@ private:
 };
 
 GenomeMatcherImpl::GenomeMatcherImpl(int minSearchLength)
-: m_minSearchLength(minSearchLength), m_sequences(new Trie<Match*>)
+: m_minSearchLength(minSearchLength), m_sequences(new Trie<DNAMatch*>)
 {}
 
 GenomeMatcherImpl::~GenomeMatcherImpl()
 {
     delete m_sequences;
-    if (m_matches.empty())
-        return;
-    for (int i = 0; i < m_matches.size(); i++)
-        delete m_matches[i];
     for (int i = 0; i < m_genomes.size(); i++)
         delete m_genomes[i];
 }
@@ -63,16 +48,16 @@ void GenomeMatcherImpl::addGenome(const Genome& genome)
 {
     const Genome* ptr = new Genome(genome);
     m_genomes.push_back(ptr);
-    int i = 0; string fragment; Match* p;
+    int i = 0; string fragment; DNAMatch* p;
     
     while (genome.extract(i, minimumSearchLength(), fragment)
-           && fragment.length() >= minimumSearchLength())
+           && fragment.length() == minimumSearchLength())
     {
-        p = new Match;
-        p->genomePos = (int) m_genomes.size() - 1;
-        p->pos = i;
+        p = new DNAMatch;
+        p->genomeName = genome.name();
+        p->position = i;
         m_sequences->insert(fragment, p);
-        m_matches.push_back(p);
+        delete p;
         i++;
         fragment = "";
     }
@@ -92,53 +77,55 @@ bool GenomeMatcherImpl::findGenomesWithThisDNA(const string& fragment, int minim
     if (minimumLength < minimumSearchLength())
         return false;
     
-    list<DNAMatch*> l;
-    vector<Match*> temp = m_sequences->find(fragment.substr(0, minimumSearchLength()), exactMatchOnly);
+    list<DNAMatch*> output;
+    vector<DNAMatch*> temp = m_sequences->find(fragment.substr(0, minimumSearchLength()), exactMatchOnly);
     for (int i = 0; i < temp.size(); i++)
     {
-        DNAMatch* p = new DNAMatch;
-        p->genomeName = m_genomes[temp[i]->genomePos]->name();
-        p->position = temp[i]->pos;
-        
-        determineLength(*temp[i], p, fragment, exactMatchOnly);
-        if (p->length < minimumLength)
-        {
-            delete p;
-            continue;
-        }
-        else
-            add(l, p);
+        determineLength(*temp[i], fragment, exactMatchOnly);
+        output.push_back(temp[i]);
     }
    
-    if (l.empty())
+    if (output.empty())
         return false;
     
-    l.sort(compareDNA);
+    output.sort(compareDNA);
     matches.clear();
-    for (auto it = l.begin(); it != l.end(); it++)
+    while (output.size() != 0)
     {
-        matches.push_back(**it);
-        delete *it;
+        DNAMatch* ptr = output.front();
+        output.pop_front();
+        if (matches.size() == 0 || matches.back().genomeName != ptr->genomeName)
+            matches.push_back(*ptr);
+        else if (matches.back().length < ptr->length)
+        {
+            matches.pop_back();
+            matches.push_back(*ptr);
+        }
     }
-    
-        return true;
+    return true;
 }
 
-void GenomeMatcherImpl::determineLength(Match &d, DNAMatch* p, const string& fragment, bool exactMatchOnly) const
+void GenomeMatcherImpl::determineLength(DNAMatch &d, const string& fragment, bool exactMatchOnly) const
 {
     bool SNiPCatch = (!exactMatchOnly);
-    p->length = 0;
+    int length = 0;
     std::string sequence = "";
-    m_genomes[d.genomePos]->extract(p->position, (int)fragment.length(), sequence);
-
-    for (int j = 0; j < fragment.length(); j++)
+    for (int i = 0; i < m_genomes.size(); i++)
+        if (d.genomeName == m_genomes[i]->name())
+        {
+            if (!m_genomes[i]->extract(d.position, (int)fragment.length(), sequence))
+                m_genomes[i]->extract(d.position, m_genomes[i]->length() - d.position, sequence);
+            break;
+        }
+    
+    for (int j = 0; j < sequence.length(); j++)
     {
         if (fragment[j] == sequence[j])
-            p->length++;
+            length++;
         else if (SNiPCatch)
         {
             SNiPCatch = false;
-            p->length++;
+            length++;
         }
         else
             break;
@@ -152,31 +139,6 @@ bool GenomeMatcherImpl::compareDNA(const DNAMatch* G1, const DNAMatch* G2)
             : G1->genomeName < G2->genomeName ? false
             : G1->genomeName > G1->genomeName ? true
             : false);
-}
-
-void GenomeMatcherImpl::add(list<DNAMatch*> &l, DNAMatch* p) const
-{
-    bool toAdd = true;
-    for (auto it = l.begin(); it != l.end(); it++)
-    {
-        if ((*it)->genomeName == p->genomeName)
-        {
-            if (p->length > (*it)->length)
-            {
-                delete *it;
-                it = l.erase(it);
-            }
-            else
-            {
-                toAdd = false;
-                break;
-            }
-        }
-    }
-    if (toAdd)
-        l.push_back(p);
-    else
-        delete p;
 }
 
 

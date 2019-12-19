@@ -9,6 +9,7 @@
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 
 #define SPRITE_SIZE 16
+#define OBJECT_RADIUS 10
 
 class Penelope;
 class Actor;

@@ -159,6 +159,12 @@ void StudentWorld::display()
     setGameStatText(s);
 }
 
+bool StudentWorld::overlap(int x1, int y1, int x2, int y2)
+{
+    int dx = sqrt(pow(x1 - x2, 2));
+    int dy = sqrt(pow(y1 - y2, 2));
+    return (dx < SPRITE_SIZE && dy < SPRITE_SIZE);
+}
 
 void StudentWorld::iterate(Object* caller)
 {
@@ -207,7 +213,7 @@ bool StudentWorld::isFlameBlockedAt(int x, int y)
 
 bool StudentWorld::isZombieVomitTriggeredAt(int x, int y)
 {
-    if (distance(x, y, m_player->getX(), m_player->getY()) <= 10
+    if (distance(x, y, m_player->getX(), m_player->getY()) <= OBJECT_RADIUS
         && m_player->infectionCount() == 0)
         return true;
     for (std::list<Actor*>::iterator it = m_board.begin();
@@ -215,7 +221,7 @@ bool StudentWorld::isZombieVomitTriggeredAt(int x, int y)
     {
         if (! (*it)->isAlive())
             continue;
-        if (distance(x, y, (*it)->getX(), (*it)->getY()) <= 10
+        if (distance(x, y, (*it)->getX(), (*it)->getY()) <= OBJECT_RADIUS
             && ! (*it)->canOverlap()
             && ! (*it)->isThreat()
             && (*it)->infectionCount() == 0)
@@ -224,19 +230,12 @@ bool StudentWorld::isZombieVomitTriggeredAt(int x, int y)
     return false;
 }
 
-bool StudentWorld::overlap(int x1, int y1, int x2, int y2)
-{
-    int dx = sqrt(pow(x1 - x2, 2));
-    int dy = sqrt(pow(y1 - y2, 2));
-    return (dx < SPRITE_SIZE && dy < SPRITE_SIZE);
-}
-
 Actor* StudentWorld::getClosestPersonTo(int x, int y, int threat)
 {
     Actor* ptr = (threat ? nullptr : m_player);
     for (auto it = m_board.begin(); it != m_board.end(); it++)
     {
-       if ((*it)->canOverlap())
+       if ((*it)->canOverlap() || ! (*it)->isAlive())
            continue;
        else if (ptr == nullptr || (!(*it)->blocks() && (*it)->isThreat() == threat
             && distance((*it)->getX(), (*it)->getY(), x, y)

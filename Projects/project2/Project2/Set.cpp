@@ -1,9 +1,9 @@
 #include "Set.h"
 #include <iostream>
 
-//////////////////////////////////////////
-///////////     utilities      ///////////
-//////////////////////////////////////////
+// ////////////////////////////////////////
+// /////////     utilities      ///////////
+// ////////////////////////////////////////
 Set::Set() 
 : m_head(nullptr), m_tail(nullptr), m_size(0) {}
 
@@ -43,9 +43,9 @@ Set::~Set()
     }
 }
 
-//////////////////////////////////////////
-///////////      mutators      ///////////
-//////////////////////////////////////////
+// ////////////////////////////////////////
+// /////////      mutators      ///////////
+// ////////////////////////////////////////
 bool Set::insert(const ItemType& value) //add data to sorted location
 {
     if (contains(value))
@@ -177,9 +177,9 @@ Set& Set::operator=(const Set& rhs)
     return *this;
 }
 
-//////////////////////////////////////////
-//////////    const functions  ///////////
-//////////////////////////////////////////
+// ////////////////////////////////////////
+// ////////    const functions  ///////////
+// ////////////////////////////////////////
 bool Set::empty() const //return whether set is empty
 { return (m_size == 0 ? true : false); }
 
@@ -224,29 +224,33 @@ void Set::dump() const
     << "\nm_tail: " << m_tail << std::endl << std::endl;
 }
 
-//////////////////////////////////////////
-//////////Non-Member functions///////////
-//////////////////////////////////////////
+// ////////////////////////////////////////
+// //////// Non-Member functions //////////
+// ////////////////////////////////////////
 
 void unite(const Set& s1, const Set& s2, Set& result)
 {
-    result = s1;
+    Set* temp = new Set(s1);
     ItemType value;
-    for (int i = 0; i < s2.size(); i++)
+    for (int i = 0; i <= s2.size(); i++)
     {
         s2.get(i, value);
-        result.insert(value);
+        temp->insert(value);
     }
+    result = *temp;
+    delete temp;
 }
 
 
 void subtract(const Set& s1, const Set& s2, Set& result)
 {
-    result = s1;
+    Set* temp = new Set(s1);
     ItemType value;
-    for (int i = 0; i < s2.size(); i++)
+    for (int i = 0; i <= s2.size(); i++)
     {
         s2.get(i, value);
-        result.erase(value);
+        temp->erase(value);
     }
+    result = *temp;
+    delete temp;
 }

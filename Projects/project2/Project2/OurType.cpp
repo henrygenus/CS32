@@ -713,9 +713,14 @@ void testone(int n)
 
 int main()
 {
+    // /*
     cout << "Enter test number: ";
     int n;
     cin >> n;
-    testone(n);
-    cout << "Passed" << endl;
+    // */
+  //  for (int n = 0; n < 81; n++) {
+        cout << "Test " << n << ": ";
+        testone(n);
+        cout << "Passed" << endl;
+    // }
 }

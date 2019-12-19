@@ -2,6 +2,7 @@
 #define Set_h
 
 #include <string>
+//using ItemType = std::string;
 using ItemType = int;
 
 class Set

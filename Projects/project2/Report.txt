@@ -1,8 +1,13 @@
 Report
 
 My doubly linked list contains nodes which have 3 elements, their data, 
-a pointer to the next node, and a pointer to the previous node.  The 
-first node’s previous pointer and the last node’s next pointer are both NULL.  The head points at the first node, and a tail pointer points at the last.  In the case of the empty set, both of these are set to NULL.  There is no dummy node, and as previously mentioned, this list is not circular.  The nodes are stored in order of increasing size according to the > operator; the first data will be <= the second, and so on.
+a pointer to the next node, and a pointer to the previous node.  The first 
+node’s previous pointer and the last node’s next pointer are both NULL.  
+The head points at the first node, and a tail pointer points at the last.  
+In the case of the empty set, both of these are set to NULL.  There is no 
+dummy node, and as previously mentioned, this list is not circular.  The 
+nodes are stored in order of increasing size according to the > operator; 
+the first data will be <= the second, and so on.
 
 
 Empty Set:

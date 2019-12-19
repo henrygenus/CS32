@@ -363,6 +363,7 @@ void DumbZombie::setMovementPlan()
 void SmartZombie::setMovementPlan()
 {
     setMovementPlanDistance(randInt(3, 10));
+    // never go to penelope
     Actor* closestPerson = (getWorld()->numCitizens() == 0 ?
                             getWorld()->getPlayer()
                             : getWorld()->getClosestCitizenTo(getX(), getY()));

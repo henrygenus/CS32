@@ -180,17 +180,15 @@ bool StudentWorld::isOpenSpace(int x, int y, Actor* actor)
     for (std::list<Actor*>::iterator it = m_board.begin();
          it != m_board.end(); it++)
     {
-        if ( ! (*it)->isAlive() || (*it) == actor)
+        if (!(*it)->isAlive() || (*it) == actor)
             continue;
-        if (overlap((*it)->getX(), (*it)->getY(), x, y))
-        {
+        else if (overlap((*it)->getX(), (*it)->getY(), x, y))
             if (actor != nullptr && ! (*it)->canOverlap())
                 return false;
-        }
     }
-    if (actor != nullptr && actor != m_player
-            && overlap(m_player->getX(), m_player->getY(), x, y))
-        return false;
+    if (actor != nullptr && actor != m_player)
+        if (overlap(m_player->getX(), m_player->getY(), x, y))
+            return false;
     return true;
 }
 

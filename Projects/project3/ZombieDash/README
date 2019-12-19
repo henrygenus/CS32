@@ -12,7 +12,7 @@ GameWorld.h:		declaration of map related functions
 SoundFX.h:		declaration of functions related to sound
 Level.h:	 	implementations for level file interpretation
 GraphObject.h:		implementations for plotting images
-
+Assets/:		images/sounds and level files
 
 My Files:
 Actor.cpp:		implementation of game object classes

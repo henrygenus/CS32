@@ -1,0 +1,21 @@
+A skeleton code was provided for this project; as such, the code for the
+following files was not developed by me.
+
+PACKAGE CONTENTS:
+Provided Files:
+main.cpp:		sets environment and calls the main game loop
+GameController.cpp:	implementations for high level gameplay:
+			i.e. key interpretation, etc
+GameController.h:	declarations for high level gameplay
+GameWorld.cpp:		implementation of map functions
+GameWorld.h:		declaration of map related functions
+SoundFX.h:		declaration of functions related to sound
+Level.h:	 	implementations for level file interpretation
+GraphObject.h:		implementations for plotting images
+
+
+My Files:
+Actor.cpp:		implementation of game object classes
+Actor.h:		declaration of game object classes
+StudentWorld.cpp:	implementation of game world
+StudentWorld.h:		declaration of game world

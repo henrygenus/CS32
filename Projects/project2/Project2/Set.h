@@ -2,8 +2,13 @@
 #define Set_h
 
 #include <string>
-//using ItemType = std::string;
+//#define my_tests
+
+#ifdef my_tests
+using ItemType = std::string;
+#else
 using ItemType = int;
+#endif
 
 class Set
 {

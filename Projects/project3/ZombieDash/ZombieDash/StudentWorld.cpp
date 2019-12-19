@@ -109,12 +109,12 @@ int StudentWorld::move()
     for (list<Actor*>::iterator p = m_board.begin(); p != m_board.end(); p++)
         (*p)->doSomething();
     for (list<Actor*>::iterator p = m_board.begin(); p != m_board.end(); p++)
-        if ( ! (*p)->isAlive())
+        if (!(*p)->isAlive())
         {
             delete *p;
             p = m_board.erase(p);
         }
-    if ( ! m_player->isAlive())
+    if (!m_player->isAlive())
     {
         setStatus(GWSTATUS_PLAYER_DIED);
         decLives();

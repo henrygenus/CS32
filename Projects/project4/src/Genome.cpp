@@ -31,6 +31,7 @@ GenomeImpl::GenomeImpl(const string& nm, const string& sequence)
 
 bool GenomeImpl::load(istream& genomeSource, vector<Genome>& genomes) 
 {
+    genomes.clear();
     string name = "", sequence = "", line = "";
     for (;;)
     {
@@ -42,8 +43,16 @@ bool GenomeImpl::load(istream& genomeSource, vector<Genome>& genomes)
             while (genomeSource.peek() != EOF && genomeSource.peek() != '>')
             {
                 line = "";
-                if (!getline(genomeSource, line))
+                if (!getline(genomeSource, line) || line == "")
                     return false;
+                transform(line.begin(), line.end(), line.begin(), ::toupper);
+                for (int i = 0; i < line.length(); i++)
+                    if (line[i] != 'T' &&
+                        line[i] != 'A' &&
+                        line[i] != 'G' &&
+                        line[i] != 'C' &&
+                        line[i] != 'N')
+                        return false;
                 sequence += line;
             }
             if (name == "" || sequence == "")

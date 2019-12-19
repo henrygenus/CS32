@@ -97,7 +97,7 @@ void Trie<ValueType>::addValue(node<ValueType>* next, std::string key, ValueType
         next->m_values.push_back(value);
         return;
     }
-    
+
     if (next->m_nChildren != 0)
     {
         for (int i = 0; i < next->m_nChildren; i++)

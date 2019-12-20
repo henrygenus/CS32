@@ -273,7 +273,6 @@ void Citizen::doSomething()
         int max = INT_MIN, x = getX(), y = getY(), dist;
         for (int i = 0; i < 360; i += 90)
         {
-            int prev_dir = getDirection();
             setDirection(i);
             int dest_x = x + CITIZEN_MOVE_LENGTH * cos(getDirection() * PI/180);
             int dest_y = y + CITIZEN_MOVE_LENGTH * sin(getDirection() * PI/180);
@@ -281,9 +280,10 @@ void Citizen::doSomething()
             if (dist > max && distanceIncreases(dest_x, dest_y, dist_z))
             {
                 if (tryToMove(dest_x, dest_y))
+                {
                     max = dist;
-                else
-                    setDirection(prev_dir);
+                    setDirection(i);
+                }
             }
         }
         return;

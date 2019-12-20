@@ -21,13 +21,13 @@ History::History(int nRows, int nCols)
 
 bool History::record(int r, int c)
 {
-    if(r > m_Rows || c > m_Cols)
+    if(r < 1 || c < 1 || r > m_Rows || c > m_Cols)
         return false;
-    switch(m_Grid[r][c])
+    switch(m_Grid[r-1][c-1])
     {
-        case '.':   m_Grid[r][c] = 'A'; break;
+        case '.':   m_Grid[r-1][c-1] = 'A'; break;
         case 'Z':   break;
-        default:    m_Grid[r][c]++; break;
+        default:    m_Grid[r-1][c-1]++; break;
     }
     return true;
 }

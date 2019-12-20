@@ -4,9 +4,9 @@
 #include "globals.h"
 #include <iostream>
 using namespace std;
-///////////////////////////////////////////////////////////////////////////
-//  Arena implementations
-///////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////
+// ////////////////////  Arena implementations /////////////////////////////
+// /////////////////////////////////////////////////////////////////////////
 
 Arena::Arena(int nRows, int nCols)
 :m_History(nRows, nCols)
@@ -136,6 +136,11 @@ void Arena::display() const
         if (m_player->isDead())
             cout << "The player is dead." << endl;
     }
+    
+    if (m_nZombies == 0)
+    {
+        cout << "The player has won!" << endl;
+    }
 }
 
 History& Arena::history()
@@ -169,8 +174,8 @@ bool Arena::attackZombieAt(int r, int c, int dir)
     // Attack one zombie.  Returns true if a zombie was attacked and destroyed,
     // false otherwise (no zombie there, or the attack did not destroy the
     // zombie).
-    int k = 0;
-    for ( ; k < m_nZombies; k++)
+    int k;
+    for (k = 0; k < m_nZombies; k++)
     {
         if (m_zombies[k]->row() == r  &&  m_zombies[k]->col() == c)
             break;

@@ -200,7 +200,6 @@ public:
     
     //general virtuals
     virtual void setMovementPlan() = 0;
-    virtual void attemptToThrowVaccine() = 0;
     virtual bool tryToVomit();
    
 private:
@@ -216,8 +215,8 @@ public:
     DumbZombie(int x, int y)
     : Zombie(x, y, !(randInt(0, 9))) {}
     
+    // setter
     virtual void setMovementPlan();
-    virtual void attemptToThrowVaccine();
 };
 
 class SmartZombie : public Zombie
@@ -230,9 +229,6 @@ public:
     //setters
     virtual void setMovementPlan();
     virtual void setDead() { Zombie::setDead(); increaseScore(1000); }
-    
-    //general virtuals
-    virtual void attemptToThrowVaccine() {}
 };
 
 // //////////////////////////////

@@ -300,17 +300,8 @@ void Zombie::setDead()
     Actor::setDead();
     playSound(SOUND_ZOMBIE_DIE);
     increaseScore(1000);
-    if (hasVaccine)
-        attemptToThrowVaccine();
-}
-
-void DumbZombie::attemptToThrowVaccine()
-{
-    int dir = 90 * randInt(0, 3);
-    int dest_x = getX() + cos(dir * PI/180) * SPRITE_WIDTH;
-    int dest_y = getY() + sin(dir * PI/180) * SPRITE_HEIGHT;
-    if (getWorld()->isOpenSpace(dest_x, dest_y, nullptr))
-        getWorld()->addActor(new Vaccine(dest_x, dest_y));
+    if (hasVaccine && getWorld()->isOpenSpace(getX(), getY(), nullptr))
+        getWorld()->addActor(new Vaccine(getX(), getY()));
 }
 
 void Zombie::doSomething()

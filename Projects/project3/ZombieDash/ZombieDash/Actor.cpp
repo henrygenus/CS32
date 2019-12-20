@@ -323,7 +323,7 @@ void Zombie::doSomething()
     changeMove();
     if ( ! isAlive() || canMove() )
         return;
-    if (!(rand() % 4) && tryToVomit())
+    if (!randInt(0, 4) && tryToVomit())
         return;
     if (m_movementPlanDistance == 0)
         setMovementPlan();
@@ -362,9 +362,9 @@ void SmartZombie::setMovementPlan()
     {
         int dx, dy;
         FindDirectionsToward(closestPerson, dx, dy);
-        if (dx == IN_LINE)
+        if (dx == IN_LINE && dy != IN_LINE)
             setDirection(dy);
-        if (dy == IN_LINE)
+        else if (dy == IN_LINE && dx != IN_LINE)
             setDirection(dx);
         else
             setDirection(randInt(0, 1) ? dx : dy);

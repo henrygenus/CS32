@@ -214,7 +214,7 @@ class DumbZombie : public Zombie
 public:
     //utilities
     DumbZombie(int x, int y)
-    : Zombie(x, y, !(rand() % 10)) {}
+    : Zombie(x, y, !(randInt(0, 10))) {}
     
     virtual void setMovementPlan();
     virtual void attemptToThrowVaccine();

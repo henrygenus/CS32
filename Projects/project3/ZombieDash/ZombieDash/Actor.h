@@ -184,8 +184,8 @@ class Zombie : public Person
 {
 public:
     //utilities
-    Zombie(int x, int y)
-        : Person(IID_ZOMBIE, x, y), m_movementPlanDistance(0) {}
+    Zombie(int x, int y, bool hasVaccine)
+    : Person(IID_ZOMBIE, x, y), m_movementPlanDistance(0), hasVaccine(hasVaccine) {}
     virtual ~Zombie() {}
     
     virtual void doSomething();
@@ -205,6 +205,7 @@ public:
    
 private:
     int m_movementPlanDistance;
+    bool hasVaccine;
 };
 
 
@@ -213,7 +214,7 @@ class DumbZombie : public Zombie
 public:
     //utilities
     DumbZombie(int x, int y)
-        : Zombie(x, y) {}
+    : Zombie(x, y, !(rand() % 10)) {}
     
     virtual void setMovementPlan();
     virtual void attemptToThrowVaccine();
@@ -224,11 +225,14 @@ class SmartZombie : public Zombie
 public:
     //utilities
     SmartZombie(int x, int y)
-        : Zombie(x, y) {}
+    : Zombie(x, y, false) {}
     
-    virtual void setMovementPlan();
+    // getters
+    int getMinDistActorAndDistance(Actor* Penelope, Actor* closestPerson);
+        // set closest person equal to the closest of Penelope & closestPerson
     
     //setters
+    virtual void setMovementPlan();
     virtual void setDead() { Zombie::setDead(); increaseScore(1000); }
     
     //general virtuals

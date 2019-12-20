@@ -304,19 +304,17 @@ void Zombie::setDead()
     Actor::setDead();
     playSound(SOUND_ZOMBIE_DIE);
     increaseScore(1000);
-    attemptToThrowVaccine();
+    if (hasVaccine)
+        attemptToThrowVaccine();
 }
 
 void DumbZombie::attemptToThrowVaccine()
 {
-    if (randInt(1, 10) == 10)
-    {
-        int dir = 90 * randInt(0, 3);
-        int dest_x = getX() + cos(dir * PI/180) * SPRITE_WIDTH;
-        int dest_y = getY() + sin(dir * PI/180) * SPRITE_HEIGHT;
-        if (getWorld()->isOpenSpace(dest_x, dest_y, nullptr))
+    int dir = 90 * randInt(0, 3);
+    int dest_x = getX() + cos(dir * PI/180) * SPRITE_WIDTH;
+    int dest_y = getY() + sin(dir * PI/180) * SPRITE_HEIGHT;
+    if (getWorld()->isOpenSpace(dest_x, dest_y, nullptr))
         getWorld()->addActor(new Vaccine(dest_x, dest_y));
-    }
 }
 
 void Zombie::doSomething()
@@ -324,8 +322,7 @@ void Zombie::doSomething()
     changeMove();
     if ( ! isAlive() || canMove() )
         return;
-    int chance = randInt(1, 3);
-    if (chance == 3 && tryToVomit())
+    if (!(rand() % 4) && tryToVomit())
         return;
     if (m_movementPlanDistance == 0)
         setMovementPlan();
@@ -359,11 +356,9 @@ void DumbZombie::setMovementPlan()
 void SmartZombie::setMovementPlan()
 {
     setMovementPlanDistance(randInt(3, 10));
-    // never go to penelope
-    Actor* closestPerson = (getWorld()->numCitizens() == 0 ?
-                            getWorld()->getPlayer()
-                            : getWorld()->getClosestCitizenTo(getX(), getY()));
-    if (distance(closestPerson->getX(), closestPerson->getY(), getX(), getY()) < 80)
+    Actor* closestPerson = getWorld()->getClosestCitizenTo(getX(), getY());
+    int dist = getMinDistActorAndDistance(getWorld()->getPlayer(), closestPerson);
+    if (dist < 80)
     {
         int dx, dy;
         FindDirectionsToward(closestPerson, dx, dy);
@@ -376,6 +371,17 @@ void SmartZombie::setMovementPlan()
     }
     else
         setDirection(randInt(0, 3) * 90);
+}
+
+int SmartZombie::getMinDistActorAndDistance(Actor* Penelope, Actor* closestPerson)
+{
+    int dist_p = distance(Penelope->getX(), Penelope->getX(), getX(), getY());
+    int dist_c = (closestPerson == nullptr ? INT_MAX :
+                  distance(closestPerson->getX(), closestPerson->getY(), getX(), getY()));
+    int dist = std::min(dist_p, dist_c);
+    if (dist == dist_p)
+        closestPerson = Penelope;
+    return dist;
 }
 // //////////////////////////////
 // ////////   OBJECTS  //////////

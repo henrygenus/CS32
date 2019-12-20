@@ -358,14 +358,13 @@ void SmartZombie::setMovementPlan()
 {
     setMovementPlanDistance(randInt(3, 10));
     Actor* closestPerson = getWorld()->getClosestCitizenTo(getX(), getY());
-    int dist = getMinDistActorAndDistance(getWorld()->getPlayer(), closestPerson);
-    if (dist < 80)
+    if (distance(closestPerson->getX(), closestPerson->getY(), getX(), getY()) < 80)
     {
         int dx, dy;
         FindDirectionsToward(closestPerson, dx, dy);
-         if (dx == IN_LINE)
+        if (dx == IN_LINE)
             setDirection(dy);
-        else if (dy == IN_LINE)
+        if (dy == IN_LINE)
             setDirection(dx);
         else
             setDirection(randInt(0, 1) ? dx : dy);
@@ -374,16 +373,6 @@ void SmartZombie::setMovementPlan()
         setDirection(randInt(0, 3) * 90);
 }
 
-int SmartZombie::getMinDistActorAndDistance(Actor* Penelope, Actor* closestPerson)
-{
-    int dist_p = distance(Penelope->getX(), Penelope->getX(), getX(), getY());
-    int dist_c = (closestPerson == nullptr ? INT_MAX :
-                  distance(closestPerson->getX(), closestPerson->getY(), getX(), getY()));
-    int dist = std::min(dist_p, dist_c);
-    if (dist == dist_p)
-        closestPerson = Penelope;
-    return dist;
-}
 // //////////////////////////////
 // ////////   OBJECTS  //////////
 // //////////////////////////////

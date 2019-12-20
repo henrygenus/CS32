@@ -227,10 +227,6 @@ public:
     SmartZombie(int x, int y)
     : Zombie(x, y, false) {}
     
-    // getters
-    int getMinDistActorAndDistance(Actor* Penelope, Actor* closestPerson);
-        // set closest person equal to the closest of Penelope & closestPerson
-    
     //setters
     virtual void setMovementPlan();
     virtual void setDead() { Zombie::setDead(); increaseScore(1000); }

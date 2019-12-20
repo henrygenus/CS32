@@ -318,7 +318,7 @@ void Zombie::doSomething()
     changeMove();
     if ( ! isAlive() || canMove() )
         return;
-    if (!randInt(0, 4) && tryToVomit())
+    if (!randInt(0, 3) && tryToVomit())
         return;
     if (m_movementPlanDistance == 0)
         setMovementPlan();

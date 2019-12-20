@@ -252,14 +252,12 @@ void Citizen::doSomething()
 {
     Human::doSomething();
     changeMove();
-    if ( ! isAlive() || canMove())
+    if ( ! isAlive() || ! canMove())
         return;
     Actor* closestZombie = getWorld()->getClosestZombieTo(getX(), getY());
-    int dist_z, dist_p;
-    dist_p = distance(getWorld()->getPlayer()->getX(),
-                      getWorld()->getPlayer()->getY(),
-                      getX(), getY());
-    dist_z = distance(closestZombie->getX(), closestZombie->getY(), getX(), getY());
+    int dist_p = distance(getX(), getY(),
+                      getWorld()->getPlayer()->getX(), getWorld()->getPlayer()->getY());
+    int dist_z = distance(closestZombie->getX(), closestZombie->getY(), getX(), getY());
     if (dist_p < dist_z) // Penelope is closer than any zombie
     {
         setDirection(FindDirectionsToward(getWorld()->getPlayer()));
@@ -270,19 +268,23 @@ void Citizen::doSomething()
     }
     else //zombie is closer
     {
-        setDirection(360 - FindDirectionsToward(closestZombie));
-        int max = INT_MIN;
-        int x = getX(), y = getY();
-        
+        // check away from nearest zombie, then perpendicular
+        setDirection(180 + FindDirectionsToward(closestZombie));
+        int max = INT_MIN, x = getX(), y = getY(), dist;
         for (int i = 0; i < 360; i += 90)
         {
+            int prev_dir = getDirection();
             setDirection(i);
             int dest_x = x + CITIZEN_MOVE_LENGTH * cos(getDirection() * PI/180);
             int dest_y = y + CITIZEN_MOVE_LENGTH * sin(getDirection() * PI/180);
-            int dist = distance(dest_x, dest_y, closestZombie->getX(), closestZombie->getY());
+            dist = distance(closestZombie->getX(), closestZombie->getY(), dest_x, dest_y);
             if (dist > max && distanceIncreases(dest_x, dest_y, dist_z))
+            {
                 if (tryToMove(dest_x, dest_y))
                     max = dist;
+                else
+                    setDirection(prev_dir);
+            }
         }
         return;
     }

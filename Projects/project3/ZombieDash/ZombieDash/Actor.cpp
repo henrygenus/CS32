@@ -398,7 +398,10 @@ void Object::doSomething()
 void Exit::activate(Actor* actor)
  {
     if (getWorld()->numCitizens() > 0)
+    {
         actor->exit();
+        increaseScore(500);
+    }
     else if (actor == getWorld()->getPlayer())
     {
         getWorld()->setStatus(GWSTATUS_FINISHED_LEVEL);

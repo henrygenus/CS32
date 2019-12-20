@@ -245,9 +245,6 @@ bool Citizen::distanceIncreases(int x, int y, int dist_z) const
     return false;
 }
 
-
-
-//citizen currently moving toward zombie
 void Citizen::doSomething()
 {
     Human::doSomething();
@@ -268,7 +265,6 @@ void Citizen::doSomething()
     }
     else //zombie is closer
     {
-        // check away from nearest zombie, then perpendicular
         setDirection(180 + FindDirectionsToward(closestZombie));
         int max = INT_MIN, x = getX(), y = getY(), dist;
         for (int i = 0; i < 360; i += 90)
@@ -284,7 +280,6 @@ void Citizen::doSomething()
                     setDirection(i);
                 }
         }
-        return;
     }
 }
 

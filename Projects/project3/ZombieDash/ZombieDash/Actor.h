@@ -87,7 +87,7 @@ public:
     virtual bool canOverlap() const { return false; }
 
     //general virtuals
-    void FindDirectionsToward(Actor* closestPerson, int &dx, int &dy);
+    int FindDirectionsToward(Actor* closestPerson);
     virtual bool tryToMove(int dest_x, int dest_y);
    
 private:

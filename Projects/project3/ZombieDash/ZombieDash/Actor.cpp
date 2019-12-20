@@ -41,16 +41,23 @@ void Actor::playSound(int ID)
 // //////////////////////////////
 
 //-1 marks equal
-void Person::FindDirectionsToward(Actor* closestPerson, int &dx, int &dy)
+int Person::FindDirectionsToward(Actor* closestPerson)
 {
-    dx = closestPerson->getX() - getX();
+    int dx = closestPerson->getX() - getX();
+    int dy = closestPerson->getY() - getY();
     dx = ( dx > 0 ? right
-          : dx < 0 ? left
-          : IN_LINE);
-    dy = closestPerson->getY() - getY();
+             : dx < 0 ? left
+             : IN_LINE);
     dy = ( dy > 0 ? up
-          : dy < 0 ? down
-          : IN_LINE);
+             : dy < 0 ? down
+             : IN_LINE);
+
+    if (dx == IN_LINE && dy != IN_LINE)
+         return dy;
+     else if (dy == IN_LINE && dx != IN_LINE)
+         return dx;
+     else
+         return (randInt(0, 1) ? dx : dy);
 }
 
 bool Person::tryToMove(int dest_x, int dest_y)
@@ -248,7 +255,7 @@ void Citizen::doSomething()
     if ( ! isAlive() || canMove())
         return;
     Actor* closestZombie = getWorld()->getClosestZombieTo(getX(), getY());
-    int dx, dy, dist_z, dist_p;
+    int dist_z, dist_p;
     dist_p = distance(getWorld()->getPlayer()->getX(),
                       getWorld()->getPlayer()->getY(),
                       getX(), getY());
@@ -256,13 +263,7 @@ void Citizen::doSomething()
     const int dir = getDirection();
     if (dist_p < dist_z)
     {
-        FindDirectionsToward(getWorld()->getPlayer(), dx, dy);
-        if (dx == -1)
-            setDirection(dy);
-        else if (dy == -1)
-            setDirection(dx);
-        else
-            setDirection(randInt(0, 1) ? dx : dy);
+        setDirection(FindDirectionsToward(getWorld()->getPlayer()));
         int dest_x = getX() + CITIZEN_MOVE_LENGTH * cos(getDirection() * PI/180);
         int dest_y = getY() + CITIZEN_MOVE_LENGTH * sin(getDirection() * PI/180);
         if (tryToMove(dest_x, dest_y))
@@ -270,14 +271,13 @@ void Citizen::doSomething()
     }
     else //zombie is closer
     {
-        FindDirectionsToward(closestZombie, dx, dy);
+        setDirection(360 - FindDirectionsToward(closestZombie));
         for (int i = 0; i < 360; i += 90)
         {
             setDirection(i);
             int dest_x = getX() + CITIZEN_MOVE_LENGTH * cos(getDirection() * PI/180);
             int dest_y = getY() + CITIZEN_MOVE_LENGTH * sin(getDirection() * PI/180);
-            if (distanceIncreases(dest_x, dest_y, dist_z)
-                && tryToMove(dest_x, dest_y))
+            if (distanceIncreases(dest_x, dest_y, dist_z) && tryToMove(dest_x, dest_y))
                 return;
         }
     }
@@ -359,16 +359,7 @@ void SmartZombie::setMovementPlan()
     setMovementPlanDistance(randInt(3, 10));
     Actor* closestPerson = getWorld()->getClosestCitizenTo(getX(), getY());
     if (distance(closestPerson->getX(), closestPerson->getY(), getX(), getY()) < 80)
-    {
-        int dx, dy;
-        FindDirectionsToward(closestPerson, dx, dy);
-        if (dx == IN_LINE && dy != IN_LINE)
-            setDirection(dy);
-        else if (dy == IN_LINE && dx != IN_LINE)
-            setDirection(dx);
-        else
-            setDirection(randInt(0, 1) ? dx : dy);
-    }
+        setDirection(FindDirectionsToward(closestPerson));
     else
         setDirection(randInt(0, 3) * 90);
 }

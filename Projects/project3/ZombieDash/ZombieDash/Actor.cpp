@@ -260,8 +260,7 @@ void Citizen::doSomething()
                       getWorld()->getPlayer()->getY(),
                       getX(), getY());
     dist_z = distance(closestZombie->getX(), closestZombie->getY(), getX(), getY());
-    const int dir = getDirection();
-    if (dist_p < dist_z)
+    if (dist_p < dist_z) // Penelope is closer than any zombie
     {
         setDirection(FindDirectionsToward(getWorld()->getPlayer()));
         int dest_x = getX() + CITIZEN_MOVE_LENGTH * cos(getDirection() * PI/180);
@@ -272,18 +271,22 @@ void Citizen::doSomething()
     else //zombie is closer
     {
         setDirection(360 - FindDirectionsToward(closestZombie));
+        int max = INT_MIN;
+        int x = getX(), y = getY();
+        
         for (int i = 0; i < 360; i += 90)
         {
             setDirection(i);
-            int dest_x = getX() + CITIZEN_MOVE_LENGTH * cos(getDirection() * PI/180);
-            int dest_y = getY() + CITIZEN_MOVE_LENGTH * sin(getDirection() * PI/180);
-            if (distanceIncreases(dest_x, dest_y, dist_z) && tryToMove(dest_x, dest_y))
-                return;
+            int dest_x = x + CITIZEN_MOVE_LENGTH * cos(getDirection() * PI/180);
+            int dest_y = y + CITIZEN_MOVE_LENGTH * sin(getDirection() * PI/180);
+            int dist = distance(dest_x, dest_y, closestZombie->getX(), closestZombie->getY());
+            if (dist > max && distanceIncreases(dest_x, dest_y, dist_z))
+                if (tryToMove(dest_x, dest_y))
+                    max = dist;
         }
+        return;
     }
-    setDirection(dir);
 }
-
 
 void Citizen::fatalInfection()
 {

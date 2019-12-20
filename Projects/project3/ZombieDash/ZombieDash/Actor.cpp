@@ -273,18 +273,16 @@ void Citizen::doSomething()
         int max = INT_MIN, x = getX(), y = getY(), dist;
         for (int i = 0; i < 360; i += 90)
         {
-            setDirection(getDirection() + i);
+            setDirection(i);
             int dest_x = x + CITIZEN_MOVE_LENGTH * cos(getDirection() * PI/180);
             int dest_y = y + CITIZEN_MOVE_LENGTH * sin(getDirection() * PI/180);
             dist = distance(closestZombie->getX(), closestZombie->getY(), dest_x, dest_y);
             if (dist > max && distanceIncreases(dest_x, dest_y, dist_z))
-            {
                 if (tryToMove(dest_x, dest_y))
                 {
                     max = dist;
                     setDirection(i);
                 }
-            }
         }
         return;
     }

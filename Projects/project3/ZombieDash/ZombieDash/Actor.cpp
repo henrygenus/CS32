@@ -12,6 +12,7 @@ const int LANDMINES = -2;
 const int GAS = -3;
 const int VACCINES = -4;
 
+#define IN_LINE -1
 
 
 double distance(int x1, int y1, int x2, int y2)
@@ -45,11 +46,11 @@ void Person::FindDirectionsToward(Actor* closestPerson, int &dx, int &dy)
     dx = closestPerson->getX() - getX();
     dx = ( dx > 0 ? right
           : dx < 0 ? left
-          : -1);
+          : IN_LINE);
     dy = closestPerson->getY() - getY();
     dy = ( dy > 0 ? up
           : dy < 0 ? down
-          : -1);
+          : IN_LINE);
 }
 
 bool Person::tryToMove(int dest_x, int dest_y)
@@ -362,9 +363,9 @@ void SmartZombie::setMovementPlan()
     {
         int dx, dy;
         FindDirectionsToward(closestPerson, dx, dy);
-         if (dx == -1)
+         if (dx == IN_LINE)
             setDirection(dy);
-        else if (dy == -1)
+        else if (dy == IN_LINE)
             setDirection(dx);
         else
             setDirection(randInt(0, 1) ? dx : dy);

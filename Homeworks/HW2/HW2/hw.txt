@@ -1,0 +1,35 @@
+Problem 2:
+
+(3,5), (4,5), (5,5), (6,5), 
+(7,5), (8,5), (8,4), (8,3),
+(8,2), (8,1), (8,6), (8,7)
+
+ORDER: 123456789!@#
+XXXXXXXXXX
+X....X...X
+X.XX.XX..X
+XXX..1.X.X
+X.XXX2XXXX
+X.X..3X..X
+X...X4X..X
+XXXXX5X.XX
+X!9876@#.X
+XXXXXXXXXX
+
+Problem 4:
+
+(3,5), (4,5), (3,4), (3,6),
+(5,5), (3,3), (2,4), (6,5),
+(5,4), (7,5), (5,3), (7,6)
+
+ORDER: 123456789!@#
+XXXXXXXXXX
+X....X...X
+X.XX7XX..X
+XXX6314X.X
+X.XXX2XXXX
+X.X@95X..X
+X...X8X..X
+XXXXX!X.XX
+X....#...X
+XXXXXXXXXX

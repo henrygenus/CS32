@@ -1,0 +1,13 @@
+2.  The insert function calls findFirstAtLeast(), which uses the < operator to determine where the item should be placed, but this is not defined in the Coord class, and it will only compare the memory locations of the items.
+
+3b. We would have no way of identifying the absolute location of each object, as the path could not be passed to the lower level.
+
+4a. The time complexity is O(n^3), as there are three loops which iterate N times, with no cases which would cause them to end early.
+
+4b. This algorithm only traverses one half of the square matrix.  Since there are two loops that go to N nested with one loop that goes to i, the time complexity is O(n^3), (or more precisely, O(n^2*i), albeit with a smaller constant of proportionality than the previous algorithm.
+
+5a.  Since get performs k operations and insert does as well, and both are embedded within a loop which iterates N times, and this is possibly preceded by a copying of the entirety of one set into another, the time complexity is N + N + N*(k+k), or O(n^2), (or more precisely, O(n*k).
+
+5b. The first and second loop are each O(N).  They are followed by an O(NlogN).  Another N then follows.  The copy is also N.  This makes the time N + N + N + N + NlogN, or O(NlogN).
+
+5c. The best case time complexity is O(1), since it can return immediately.  In the worst case, the algorithm iterates through both lists simultaneously, which takes O(N) operations.  It then inserts the remaining items of p2, which may be all N.  The time complexity is therefore O(n) + O(N), or O(N).

@@ -1,16 +1,12 @@
-This assignment had four parts:
-1. to implement a variety of tree functions including a BFS to
-   count the number of values equal to a passed value
-2. to implement a variety of array functions implemented by Python
-3. to implement a maze search using recursion
-4. to implement a basic inherited class structure
+This assigment had three parts:
+1. implement a maze search algorithm using a queue
+2. implement a maze search algorithm using a stack
+3. implement a function to evaluate boolean logic
 
 PACKAGE CONTENTS:
-tree.cpp:		implementations of the tree functions
-treeMain.cpp:		testing code for the tree functions
-linear.cpp:		implementations of the array functions
-linearMain.cpp:		testing code for the array functions
-maze.cpp:		implementation of the recursive maze function
-mazeMain.cpp:		testing code for the recursive main function
-landmark.cpp:		implementations of the inherited landmark classes
-landmarkMain.cpp:	testing code for the landmark classes
+Set.cpp:	a PROVIDED implementation of the Set class from HW1
+Set.h:		a PROVIDED declaration of the Set class from HW1
+mazequeue.cpp:	implementation of a queue maze search algorithm
+mazestack.cpp:	implementation of a stack maze search algorithm
+eval.cpp:	implementation of a function to test boolean logic
+eval.h:		delcaration of a function and helper function

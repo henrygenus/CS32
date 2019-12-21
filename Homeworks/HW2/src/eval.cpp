@@ -14,20 +14,13 @@ int evaluate(string infix, const Set& trueValues, const Set& falseValues, string
     //attempt to create postfix expression
     int returnValue = 0;
     if (! toPostFix(infix, postfix))
+        // expression could not be converted to a valid postfix expression
         return 1;
-    else
-    {
-        if (doEval(postfix, trueValues, falseValues, returnValue) == 1)
-                //function did not perform correctly
-        {
-            return returnValue;
-        }
-        else
-        {
-            result = returnValue;
-            return true;
-        }
-    }
+    else if (doEval(postfix, trueValues, falseValues, returnValue) == 1)
+        //function did not perform correctly
+        return returnValue;
+    result = returnValue;
+    return true;
 }
 
 // //////////////////////////////////////////////////
@@ -39,20 +32,19 @@ bool toPostFix(string infix, string& postfix)
 // return 1 if error
 // return 0 and set postfix on success
 {
-    string temp_string = ""; unsigned long temp = 0;
+    string temp_string, s; unsigned long temp = 0;
     stack<char> operators;
+    int j;
     for (int i = 0; i < infix.length(); i++)
     {
-        switch(infix[i]) {
+        switch(infix[i])
+        {
             case '(':
-            {
                 temp = temp_string.length();
                 operators.push('(');
-                continue;
-            }
+                break;
             case ')':
-            {
-                int j = 0;
+                j = 0;
                 while (operators.top() != '(')
                 {
                     temp += operators.top();
@@ -60,21 +52,13 @@ bool toPostFix(string infix, string& postfix)
                     j++;
                 }
                 if (j == 0 && !islower(temp_string[postfix.length() - 1]))
-                {
-                    //cerr << "Error: Empty Parentheses." << endl;
                     return false;
-                }
-                string s = postfix.substr(temp, temp_string.length() - temp);
+                s = postfix.substr(temp, temp_string.length() - temp);
                 if (parse(s) == false)
-                {
-                    //cerr << "Error: Invalid Substring Within Parentheses." << endl;
                     return false;
-                }
                 operators.pop();
-                continue;
-            }
+                break;
             case '&': case '|': case '!':
-            {
                 while ( ! operators.empty() && operators.top() != '('
                        && !isHigherPriority(infix[i], operators.top()))
                 {
@@ -82,21 +66,15 @@ bool toPostFix(string infix, string& postfix)
                     operators.pop();
                 }
                 operators.push(infix[i]);
-                continue;
-            }
+                break;
             case ' ':
-                continue;
+                break;
             default: //operand or invalid character
-            {
                 if( ! islower(infix[i]))
-                {
-                    //cerr << "Error: Invalid Character." << endl;
                     return false;
-                }
                 else
                     temp_string += infix[i];
-                continue;
-            }
+                break;
         }
     }
     while ( ! operators.empty())
@@ -127,7 +105,8 @@ bool isHigherPriority(char current, char top)
     }
 }
 
-bool parse(string s) //if a subsection is true or false, replace it
+bool parse(string s)
+    // return whether the section is a valid boolean expression
 {
     if (s == "")
         return false;
@@ -136,26 +115,23 @@ bool parse(string s) //if a subsection is true or false, replace it
     int charCount = 0;
     for (int i = 0; i < s.length(); i++)
     {
-        if (s[i] == '!')
+        switch(s[i])
         {
-            if (i == 0 || !islower(s[i-1]))
-                return false;
-            charCount = 0;
-            s.erase(i, 1);
-            continue;
-        }
-        else if (s[i] == '&' || s[i] == '|')
-            {
-                if (i < 2 || !islower(s[i-1]) || !islower(s[i-2]))
+            case ' ':
+                continue;
+            case '!':
+                if (i == 0 || charCount != 1)
                     return false;
                 charCount = 0;
-                s.erase(i-1, 2);
+                break;
+            case '&': case '|':
+                if (i < 2)
+                    return false;
+                charCount = 0;
                 continue;
-            }
-        else if (s[i] == ' ')
-            continue;
-        else
-            charCount++;
+            default:
+                charCount++;
+        }
         if (charCount == 3)
             return false;
     }

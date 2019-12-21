@@ -8,7 +8,8 @@
 using namespace std;
 
 int evaluate(string infix, const Set& trueValues, const Set& falseValues, string& postfix, bool &result)
-    // return 1 if error, 0 if evaluated
+    // return 3 if char is in true & false, 2 if char is neither, 1 if other error
+    // return 0 and set result if successful
 {
     //attempt to create postfix expression
     int returnValue = 0;
@@ -35,6 +36,8 @@ int evaluate(string infix, const Set& trueValues, const Set& falseValues, string
 
 
 bool toPostFix(string infix, string& postfix)
+// return 1 if error
+// return 0 and set postfix on success
 {
     string temp_string = ""; unsigned long temp = 0;
     stack<char> operators;
@@ -161,10 +164,6 @@ bool parse(string s) //if a subsection is true or false, replace it
     return true;
 }
 
-// //////////////////////////////////////////////////
-// ///////////////    operating     /////////////////
-// //////////////////////////////////////////////////
-
 bool doEval(string postfix, const Set& trueValues, const Set& falseValues, int &returnValue)
 {
     //assumed string is properly formatted
@@ -236,7 +235,12 @@ bool setOperator(char c, bool &operand, const Set& trueValues,
 
 }
 
+// //////////////////////////////////////////////////
+// ///////////////    operating     /////////////////
+// //////////////////////////////////////////////////
+
 bool operate(bool operand1, char op, bool operand2)
+// assumes error checking has already been done & chars have been converted to bool
 {
     switch(op)
     {

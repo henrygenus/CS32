@@ -7,7 +7,7 @@ using namespace std;
 
 int evaluate(string infix, const Set& trueValues,
              const Set& falseValues, string& postfix, bool& result);
-    // return 1 if error
+    // return 3 if char is in true & false, 2 if char is neither, 1 if other error
     // return 0 and set result if successful
 bool toPostFix(string infix, string& postfix);
     // return 1 if error

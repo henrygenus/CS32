@@ -21,7 +21,7 @@ History::History(int nRows, int nCols)
 
 bool History::record(int r, int c)
 {
-    if(r < 1 || c < 1 || r > m_Rows || c > m_Cols)
+    if (r < 1 || c < 1 || r > m_Rows || c > m_Cols)
         return false;
     switch(m_Grid[r-1][c-1])
     {

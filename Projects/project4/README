@@ -1,0 +1,13 @@
+This project is an implementation of a class called a "Trie" -- a
+version of a tree which stores children with corresponding keys --
+to store and analyze DNA sequences.
+
+PACKAGE CONTENTS:
+provided.h:		a provided declaration for a genome matcher class
+main.cpp:		a main routine for working with DNA sequencing
+Trie.h:			my template class for forming a trie as above
+Genome.cpp:		my simple class for loading and working with DNA
+GenomeMatcher.cpp:	my class utilizing the two above to analyze DNA
+trie_test.cpp:		my code for testing the trie class
+genome_test.cpp:	my code for testing the genome class
+matcher_test.cpp:	my code for testing the matcher class

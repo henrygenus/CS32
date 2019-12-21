@@ -5,12 +5,6 @@ using namespace std;
 
 bool pathExists(string maze[], int nRows, int nCols, int sr, int sc, int er, int ec);
 
-/*
-int main()
-{
-
-}
-*/
 int main()
 {
     string maze1[10] = {

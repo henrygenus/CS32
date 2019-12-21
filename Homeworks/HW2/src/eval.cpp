@@ -140,73 +140,68 @@ bool parse(string s)
     return true;
 }
 
-bool doEval(string postfix, const Set& trueValues, const Set& falseValues, int &returnValue)
+bool doEval(string postfix, const Set& True, const Set& False, int &error)
 {
     //assumed string is properly formatted
     stack<char> operands;
+    bool temp = false, char1 = false, char2 = false;
+        //default value does not matter, these will always be initialized
     for (int i = 0; i < postfix.length(); i++)
     {
         if (islower(postfix[i]))
         {
-            bool temp = true;
-            if ( ! setOperator(postfix[i], temp, trueValues,
-                               falseValues, returnValue))
+            if (getTruthValue(postfix[i], temp, True, False, error) == 1)
                 return false;
             operands.push(postfix[i]);
         }
         else //ch is an operator
         {
-            //default value does not matter, these will always be initialized
-            bool operand1 = false, operand2 = false;
-            if ( ! setOperator(operands.top(), operand1, trueValues, falseValues, returnValue))
+            if (getTruthValue(operands.top(), char1, True, False, error) == 1)
                 return false;
             operands.pop();
             if (postfix[i] != '!')
             {
-                if ( ! setOperator(operands.top(), operand2, trueValues,
-                            falseValues, returnValue))
+                if (getTruthValue(operands.top(), char2, True, False, error) == 1)
                     return false;
                 operands.pop();
             }
            //call operate with empty second operand for '!'
             char value;
-            if (operate(operand1, postfix[i], operand2))
-                trueValues.get(0, value);
+            if (operate(char1, postfix[i], char2))
+                True.get(0, value);
             else //operation returns false
-                falseValues.get(0, value);
+                False.get(0, value);
             operands.push(value);
         }
     }
-    return trueValues.contains(operands.top());
+    return True.contains(operands.top());
 }
 
-bool setOperator(char c, bool &operand, const Set& trueValues,
+int getTruthValue(char c, bool &operand, const Set& trueValues,
                  const Set& falseValues, int &returnValue)
 {
     if (trueValues.contains(c) && falseValues.contains(c))
     {
-        //cerr << "Value Both True and False" << endl;
         returnValue = 3;
-        return false;
+        return 1;
     }
     
     else if (trueValues.contains(c))
     {
         operand = true;
-        return true;
+        return 0;
     }
     
     else if (falseValues.contains(c))
     {
         operand = false;
-        return true;
+        return 0;
     }
     
     else //character is in neither set
     {
-        //cerr << "Value Neither True Nor False" << endl;
         returnValue = 2;
-        return false;
+        return 1;
     }
 
 }

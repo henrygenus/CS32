@@ -1,0 +1,19 @@
+The challenge of this assignment was, as far as I can remember, to implement
+a version of the provided "Set" class using dynamic allocation, and then to
+build a secure usage of the Set class for storage of Social Security numbers.
+
+Set.cpp & Set.h contain the provided files; the public portion of the newSet
+class declaration was provided as well.
+
+PACKAGE CONTENTS:
+Set.cpp:		the provided source code for a Set class
+Set.h:			the declaration of the above Set class
+testSet.cpp:		a file to test the above Set class
+newSet.cpp:		my source code for a dynamically allocated
+			Set class
+newSet.h:		my declaration of the above Set class
+testnewSet.cpp:		a file to test the above Set class
+SSNSet.cpp:		my source code for an implementation of
+			the new Set class for secure storage
+SSNSet.h:		my declaration of the above SSNSet class
+testSSNSet.cpp:		my file to test to above SSNSet class

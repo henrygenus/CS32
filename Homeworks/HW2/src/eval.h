@@ -1,0 +1,24 @@
+#ifndef eval_h
+#define eval_h
+
+#include <string>
+#include "Set.h"
+using namespace std;
+
+int evaluate(string infix, const Set& trueValues,
+             const Set& falseValues, string& postfix, bool& result);
+    // return 1 if error
+    // return 0 and set result if successful
+bool toPostFix(string infix, string& postfix);
+    // return 1 if error
+    // return 0 and set postfix on success
+bool parse(string s);
+bool isHigherPriority(char current, char top);
+bool doEval(string postfix, const Set& trueValues,
+            const Set& falseValues, int &returnValue);
+bool setOperator(char c, bool &operand, const Set& trueValues,
+                 const Set& falseValues, int &returnValue);
+bool operate(bool operand1, char op, bool operand2);
+
+
+#endif /* eval_h */

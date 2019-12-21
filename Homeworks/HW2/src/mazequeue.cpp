@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <assert.h>
 using namespace std;
 
 class Coord
@@ -23,6 +24,11 @@ bool pathExists(string maze[], int nRows, int nCols, int sr, int sc, int er, int
 // Return true if there is a path from (sr,sc) to (er,ec)
 // through the maze; return false otherwise
 {
+    if (sr < 0 || er < 0 || sr >= nRows || er >= nRows)
+        return false;
+    if (sc < 0 || ec < 0 || sc >= nCols || ec >= nCols)
+        return false;
+
     queue<Coord> coordQueue;
     coordQueue.push(Coord(sr,sc));
     maze[sr][sc] = '*';
@@ -51,14 +57,13 @@ bool pathExists(string maze[], int nRows, int nCols, int sr, int sc, int er, int
     return false;
 }
 
-void test(string maze[], int nRows, int nCols, int sr, int sc, int er, int ec)
+int test(string maze[], int nRows, int nCols, int sr, int sc, int er, int ec)
 {
-    if (pathExists(maze, nRows, nCols, sr, sc, er, ec))
-        cout << "Solvable!" << endl;
-    else
-        cout << "Out of luck!" << endl;
-       for (int i = 0; i < nRows; i++)
-          cout << maze[i] << endl;
+    return pathExists(maze, nRows, nCols, sr, sc, er, ec);
+    /*
+    for (int i = 0; i < nRows; i++)
+      cout << maze[i] << endl;
+    */
 }
 
 int main()
@@ -70,7 +75,13 @@ int main()
         "X.X.X",
         "XXXXX"
     };
-    test(maze, 5,5, 1,1, 3,3);
+    assert(!test(maze, 0, 1, 1, 1, 1, 1));
+    assert(!test(maze, 1, 0, 1, 1, 1, 1));
+    assert(!test(maze, 1, 1, 0, 1, 1, 1));
+    assert(!test(maze, 1, 1, 1, 0, 1, 1));
+    assert(!test(maze, 1, 1, 1, 1, 0, 1));
+    assert(!test(maze, 1, 1, 1, 1, 1, 0));
+    assert(!test(maze, 5,5, 1,1, 3,3));
     
     string maze1[5] = {
         "XXXXX",
@@ -79,7 +90,7 @@ int main()
         "X.X.X",
         "XXXXX"
     };
-    test(maze1, 5,5, 1,1, 1,1);
+    assert(test(maze1, 5,5, 1,1, 1,1));
     
     string maze2[5] = {
         "XXXXX",
@@ -88,7 +99,7 @@ int main()
         "X.X.X",
         "XXXXX"
     };
-    test(maze2, 5,5, 1,1, 3,1);
+    assert(test(maze2, 5,5, 1,1, 3,1));
     
     string maze3[5] = {
         "XXXXX",
@@ -97,7 +108,7 @@ int main()
         "X.X.X",
         "XXXXX"
     };
-    test(maze3, 5,5, 1,1, 1,3);
+    assert(test(maze3, 5,5, 1,1, 1,3));
     
     string maze4[10] = {
                 "XXXXXXXXXX",
@@ -111,5 +122,6 @@ int main()
                 "X........X",
                 "XXXXXXXXXX"
             };
-    test(maze4, 10, 10, 3, 5, 8, 8);
+    assert(test(maze4, 10, 10, 3, 5, 8, 8));
+    cout << "Tests Passed" << endl;
 }

@@ -4,36 +4,27 @@
 #include <ctype.h>
 #include <cassert>
 #include "Set.h"
+#include "eval.h"
 using namespace std;
 
-int evaluate(string infix, const Set& trueValues,
-             const Set& falseValues, string& postfix, bool& result);
-bool toPostFix(string infix, string& postfix);
-bool parse(string s);
-bool isHigherPriority(char current, char top);
-bool isTrue(string postfix, const Set& trueValues,
-            const Set& falseValues, int &returnValue);
-bool setOperator(char c, bool &operand, const Set& trueValues,
-                 const Set& falseValues, int &returnValue);
-bool operate(bool operand1, char op, bool operand2);
-
-
 int evaluate(string infix, const Set& trueValues, const Set& falseValues, string& postfix, bool &result)
+    // return 1 if error, 0 if evaluated
 {
     //attempt to create postfix expression
+    int returnValue = 0;
     if (! toPostFix(infix, postfix))
         return 1;
     else
     {
-        int returnValue = 0;
-        bool r = isTrue(postfix, trueValues, falseValues, returnValue);
-        if (returnValue != 0)
-            //function did not perform correctly
+        if (doEval(postfix, trueValues, falseValues, returnValue) == 1)
+                //function did not perform correctly
+        {
             return returnValue;
+        }
         else
         {
-            result = r;
-            return 0;
+            result = returnValue;
+            return true;
         }
     }
 }
@@ -45,14 +36,14 @@ int evaluate(string infix, const Set& trueValues, const Set& falseValues, string
 
 bool toPostFix(string infix, string& postfix)
 {
-    postfix = ""; unsigned long temp = 0;
+    string temp_string = ""; unsigned long temp = 0;
     stack<char> operators;
     for (int i = 0; i < infix.length(); i++)
     {
         switch(infix[i]) {
             case '(':
             {
-                temp = postfix.length();
+                temp = temp_string.length();
                 operators.push('(');
                 continue;
             }
@@ -61,16 +52,16 @@ bool toPostFix(string infix, string& postfix)
                 int j = 0;
                 while (operators.top() != '(')
                 {
-                    postfix += operators.top();
+                    temp += operators.top();
                     operators.pop();
                     j++;
                 }
-                if (j == 0 && !islower(postfix[postfix.length() - 1]))
+                if (j == 0 && !islower(temp_string[postfix.length() - 1]))
                 {
                     //cerr << "Error: Empty Parentheses." << endl;
                     return false;
                 }
-                string s = postfix.substr(temp, postfix.length() - temp);
+                string s = postfix.substr(temp, temp_string.length() - temp);
                 if (parse(s) == false)
                 {
                     //cerr << "Error: Invalid Substring Within Parentheses." << endl;
@@ -84,7 +75,7 @@ bool toPostFix(string infix, string& postfix)
                 while ( ! operators.empty() && operators.top() != '('
                        && !isHigherPriority(infix[i], operators.top()))
                 {
-                    postfix += operators.top();
+                    temp_string += operators.top();
                     operators.pop();
                 }
                 operators.push(infix[i]);
@@ -100,17 +91,18 @@ bool toPostFix(string infix, string& postfix)
                     return false;
                 }
                 else
-                    postfix += infix[i];
+                    temp_string += infix[i];
                 continue;
             }
         }
     }
     while ( ! operators.empty())
     {
-        postfix += operators.top();
+        temp_string += operators.top();
         operators.pop();
     }
-    return parse(postfix);
+    postfix = temp_string;
+    return parse(temp_string);
 }
 
 bool isHigherPriority(char current, char top)
@@ -126,7 +118,7 @@ bool isHigherPriority(char current, char top)
         {
             if (top == '|')
                 return true;
-            else //top == |
+            else //top == !
                 return false;
         }
     }
@@ -173,7 +165,7 @@ bool parse(string s) //if a subsection is true or false, replace it
 // ///////////////    operating     /////////////////
 // //////////////////////////////////////////////////
 
-bool isTrue(string postfix, const Set& trueValues, const Set& falseValues, int &returnValue)
+bool doEval(string postfix, const Set& trueValues, const Set& falseValues, int &returnValue)
 {
     //assumed string is properly formatted
     stack<char> operands;
@@ -257,110 +249,3 @@ bool operate(bool operand1, char op, bool operand2)
     }
 }
 
-int main()
-{
-    string trueChars  = "tywz";
-    string falseChars = "fnx";
-    Set trues;
-    Set falses;
-    for (int k = 0; k < trueChars.size(); k++)
-        trues.insert(trueChars[k]);
-    for (int k = 0; k < falseChars.size(); k++)
-        falses.insert(falseChars[k]);
-    
-    string trueChar  = "aeiou";
-    string falseChar = "bgkp";
-    Set True;
-    Set False;
-    for (int k = 0; k < trueChar.size(); k++)
-        True.insert(trueChar[k]);
-    for (int k = 0; k < falseChar.size(); k++)
-        False.insert(falseChar[k]);
-    
-    string pf;
-    bool answer;
-    int i = 17;
-    for (/*i = 1*/; i <= 21; i++)
-    {
-        cerr << "Test " << i << "." << endl;
-        switch(i)
-        {
-            case 1:
-                assert(evaluate("w| f", trues, falses, pf, answer) == 0
-                       &&  pf == "wf|" &&  answer);
-                break;
-            case 2:
-                assert(evaluate("y|", trues, falses, pf, answer) == 1);
-                break;
-            case 3:
-                assert(evaluate("n t", trues, falses, pf, answer) == 1);
-                break;
-            case 4:
-                assert(evaluate("nt", trues, falses, pf, answer) == 1);
-                break;
-            case 5:
-                assert(evaluate("()", trues, falses, pf, answer) == 1);
-                break;
-            case 6:
-                assert(evaluate("y(n|y)", trues, falses, pf, answer) == 1);
-                break;
-            case 7:
-                assert(evaluate("t(&n)", trues, falses, pf, answer) == 1);
-                break;
-            case 8:
-                assert(evaluate("(n&(t|7)", trues, falses, pf, answer) == 1);
-                break;
-            case 9:
-                assert(evaluate("", trues, falses, pf, answer) == 1);
-                break;
-            case 10:
-                assert(evaluate("f  |  !f & (t&n) ", trues, falses,
-                                pf, answer) == 0);// &&
-                assert(pf == "ff!tn&&|"  &&  !answer);
-                break;
-            case 11:
-                assert(evaluate(" x  ", trues, falses, pf, answer) == 0
-                       &&  pf == "x"  &&  !answer);
-                break;
-            case 12:
-                trues.insert('x');
-                assert(evaluate("((x))", trues, falses, pf, answer) == 3);
-                break;
-            case 13:
-                falses.erase('x');
-                assert(evaluate("((x))", trues, falses, pf, answer) == 0
-                       &&  pf == "x"  &&  answer);
-                break;
-            case 14:
-                trues.erase('w');
-                assert(evaluate("w| f", trues, falses, pf, answer) == 2);
-                break;
-            case 15:
-                falses.insert('w');
-                assert(evaluate("w| f", trues, falses, pf, answer) == 0
-                       &&  pf == "wf|" &&  !answer);
-                break;
-            case 16:
-                break;
-                assert(evaluate("e&!(b|o&i|k)|!!!(p&e&g)", True, False, pf, answer) == 0 && pf == "eboi&|k|!&pe&g&!!!|"  && answer);
-                break;
-            case 17:
-                break;
-                assert(evaluate("(i&((b|i)&(i)))", True, False, pf, answer) == 0 && pf == "ibi|i&&"  && answer);
-                break;
-            case 18:
-                assert(evaluate("(o|k)u", trues, falses, pf, answer) == 1);
-                break;
-            case 19:
-                assert(evaluate("e!i", trues, falses, pf, answer) == 1);
-                break;
-            case 20:
-                assert(evaluate("g)", trues, falses, pf, answer) == 1);
-                break;
-            case 21:
-                assert(evaluate("(a|b))&((e|g)", trues, falses, pf, answer) == 1);
-                break;
-        }
-    }
-    cout << "Passed all tests" << endl;
-}

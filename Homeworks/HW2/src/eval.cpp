@@ -12,15 +12,15 @@ int evaluate(string infix, const Set& trueValues, const Set& falseValues, string
     // return 0 and set result if successful
 {
     //attempt to create postfix expression
-    int returnValue = 0;
+    bool returnValue = 0; int ret;
     if (! toPostFix(infix, postfix))
         // expression could not be converted to a valid postfix expression
         return 1;
-    else if (doEval(postfix, trueValues, falseValues, returnValue) == 1)
+    else if ((ret = doEval(postfix, trueValues, falseValues, returnValue)))
         //function did not perform correctly
-        return returnValue;
-    result = returnValue;
-    return true;
+        return ret;
+    result = bool(returnValue);
+    return 0;
 }
 
 // //////////////////////////////////////////////////
@@ -32,9 +32,8 @@ bool toPostFix(string infix, string& postfix)
 // return 1 if error
 // return 0 and set postfix on success
 {
-    string temp_string, s; unsigned long temp = 0;
+    string temp_string; unsigned long temp = 0;
     stack<char> operators;
-    int j;
     for (int i = 0; i < infix.length(); i++)
     {
         switch(infix[i])
@@ -44,24 +43,22 @@ bool toPostFix(string infix, string& postfix)
                 operators.push('(');
                 break;
             case ')':
-                j = 0;
-                while (operators.top() != '(')
+                while (! operators.empty() && operators.top() != '(')
                 {
-                    temp += operators.top();
+                    temp_string += operators.top();
                     operators.pop();
-                    j++;
                 }
-                if (j == 0 && !islower(temp_string[postfix.length() - 1]))
+                if (operators.empty())
                     return false;
-                s = postfix.substr(temp, temp_string.length() - temp);
-                if (parse(s) == false)
+                if ( ! parse(temp_string.substr(temp, temp_string.length() - temp)))
                     return false;
                 operators.pop();
                 break;
             case '&': case '|': case '!':
-                while ( ! operators.empty() && operators.top() != '('
-                       && !isHigherPriority(infix[i], operators.top()))
+                while ( ! operators.empty() && operators.top() != '(')
                 {
+                    if (isHigherPriority(infix[i], operators.top()))
+                        break;
                     temp_string += operators.top();
                     operators.pop();
                 }
@@ -96,12 +93,10 @@ bool isHigherPriority(char current, char top)
         case '|':
             return false;
         default: //case '&':
-        {
             if (top == '|')
                 return true;
             else //top == !
                 return false;
-        }
     }
 }
 
@@ -120,90 +115,78 @@ bool parse(string s)
             case ' ':
                 continue;
             case '!':
-                if (i == 0 || charCount != 1)
+                if (i == 0)
                     return false;
-                charCount = 0;
                 break;
             case '&': case '|':
                 if (i < 2)
                     return false;
-                charCount = 0;
+                charCount--;
                 continue;
             default:
                 charCount++;
         }
-        if (charCount == 3)
-            return false;
     }
-    if (charCount != 0)
+    if (charCount != 1)
         return false;
     return true;
 }
 
-bool doEval(string postfix, const Set& True, const Set& False, int &error)
+int doEval(string postfix, const Set& True, const Set& False, bool &returnValue)
 {
     //assumed string is properly formatted
     stack<char> operands;
-    bool temp = false, char1 = false, char2 = false;
+    char value;
+    int ret;
+    bool temp = false, value1 = false, value2 = false;
         //default value does not matter, these will always be initialized
     for (int i = 0; i < postfix.length(); i++)
     {
         if (islower(postfix[i]))
         {
-            if (getTruthValue(postfix[i], temp, True, False, error) == 1)
-                return false;
-            operands.push(postfix[i]);
+            if ((ret = getTruthValue(postfix[i], temp, True, False)))
+                return ret;
+            else
+                operands.push(postfix[i]);
         }
         else //ch is an operator
         {
-            if (getTruthValue(operands.top(), char1, True, False, error) == 1)
-                return false;
+            if ((ret = getTruthValue(operands.top(), value1, True, False)))
+                return ret;
             operands.pop();
             if (postfix[i] != '!')
             {
-                if (getTruthValue(operands.top(), char2, True, False, error) == 1)
-                    return false;
+                if ((ret = getTruthValue(operands.top(), value2, True, False)))
+                    return ret;
                 operands.pop();
             }
            //call operate with empty second operand for '!'
-            char value;
-            if (operate(char1, postfix[i], char2))
+            if (operate(value1, postfix[i], value2) == true)
                 True.get(0, value);
             else //operation returns false
                 False.get(0, value);
             operands.push(value);
         }
     }
-    return True.contains(operands.top());
+    return ((ret = getTruthValue(operands.top(), returnValue, True, False)));
 }
 
-int getTruthValue(char c, bool &operand, const Set& trueValues,
-                 const Set& falseValues, int &returnValue)
+int getTruthValue(char c, bool &value, const Set& True, const Set& False)
 {
-    if (trueValues.contains(c) && falseValues.contains(c))
+    if (True.contains(c) && False.contains(c))
+        return 3;
+    else if (True.contains(c))
     {
-        returnValue = 3;
-        return 1;
-    }
-    
-    else if (trueValues.contains(c))
-    {
-        operand = true;
+        value = true;
         return 0;
     }
-    
-    else if (falseValues.contains(c))
+    else if (False.contains(c))
     {
-        operand = false;
+        value = false;
         return 0;
     }
-    
     else //character is in neither set
-    {
-        returnValue = 2;
-        return 1;
-    }
-
+        return 2;
 }
 
 // //////////////////////////////////////////////////
@@ -223,4 +206,3 @@ bool operate(bool operand1, char op, bool operand2)
             return ( ! operand1);
     }
 }
-

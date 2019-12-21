@@ -14,10 +14,8 @@ bool toPostFix(string infix, string& postfix);
     // return 0 and set postfix on success
 bool parse(string s);
 bool isHigherPriority(char current, char top);
-bool doEval(string postfix, const Set& True, const Set& False, int &returnValue);
-int getTruthValue(char c, bool &operand, const Set& trueValues,
-                 const Set& falseValues, int &returnValue);
+int doEval(string postfix, const Set& True, const Set& False, bool &returnValue);
+int getTruthValue(char c, bool &operand, const Set& trueValues, const Set& falseValues);
 bool operate(bool operand1, char op, bool operand2);
-
 
 #endif /* eval_h */
